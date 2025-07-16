@@ -1,0 +1,34 @@
+disks:
+  - name: mysql-data
+    sizeGB: 1
+  - name: wordpress-data
+    sizeGB: 1
+
+services:
+  - type: private
+    name: db
+    plan: free
+    docker:
+      image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: my_secure_root_pass123
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wp_custom_user
+      MYSQL_PASSWORD: wp_secure_pass456
+    disks:
+      - name: mysql-data
+        mountPath: /var/lib/mysql
+
+  - type: web
+    name: wordpress
+    plan: free
+    docker:
+      image: wordpress:latest
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp_custom_user
+      WORDPRESS_DB_PASSWORD: wp_secure_pass456
+      WORDPRESS_DB_NAME: wordpress_db
+    disks:
+      - name: wordpress-data
+        mountPath: /var/www/html
